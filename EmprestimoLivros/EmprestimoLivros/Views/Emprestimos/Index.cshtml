@@ -7,7 +7,10 @@
 <div class="container">
 	<div class="d-flex justify-content-between align-items-center mb-5">
 		<h1>Empréstimos</h1>
-		<a class="btn btn-success mx-2" asp-action="Cadastrar"><i class="bi bi-file-earmark-plus"></i>Novo empréstimo</a>
+		<div>
+			<a class="btn btn-success mx-2" asp-action="Cadastrar"><i class="bi bi-file-earmark-plus"></i>Novo empréstimo</a>
+			<a class="btn btn-success mx-2" asp-action="Exportar"><i class="bi bi-file-earmark-plus"></i>Exportar</a>
+		</div>
 	</div>
 </div>
 
@@ -25,7 +28,7 @@
 				<th scope="col">Recebedor</th>
 				<th scope="col">Fornecedor</th>
 				<th scope="col">Livro</th>
-				<th scope="col">última atualização</th>
+				<th scope="col">Data de Empréstimo</th>
 				<th></th>
 			</tr>
 		</thead>

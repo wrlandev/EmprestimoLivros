@@ -1,7 +1,9 @@
-﻿using EmprestimoLivros.Data;
+﻿using ClosedXML.Excel;
+using EmprestimoLivros.Data;
 using EmprestimoLivros.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Data;
 
 namespace EmprestimoLivros.Controllers
 {
@@ -28,6 +30,8 @@ namespace EmprestimoLivros.Controllers
 		{
 			if (ModelState.IsValid)
 			{
+				emprestimo.dataAtualizacao = DateTime.Now;
+
 				_context.Empretimos.Add(emprestimo);
 				_context.SaveChanges();
 
@@ -59,7 +63,13 @@ namespace EmprestimoLivros.Controllers
 		{
 			if(ModelState.IsValid)
 			{
-				_context.Empretimos.Update(emprestimo);
+				var emprestimoDB = _context.Empretimos.Find(emprestimo.Id);
+
+				emprestimoDB.Fornecedor = emprestimo.Fornecedor;
+				emprestimoDB.Recebedor = emprestimo.Recebedor;
+				emprestimoDB.LivroEmprestado = emprestimo.LivroEmprestado;
+
+				_context.Empretimos.Update(emprestimoDB);
 				_context.SaveChanges();
 
 				TempData["MensagemSucesso"] = "Edição realizado com sucesso!";
@@ -101,6 +111,46 @@ namespace EmprestimoLivros.Controllers
 			TempData["MensagemSucesso"] = "Exclusão realizado com sucesso!";
 
 			return RedirectToAction("Index");
+		}
+
+		public IActionResult Exportar()
+		{
+			var dados = GetDados();
+
+			using(XLWorkbook workbook = new XLWorkbook())
+			{
+				workbook.AddWorksheet(dados,"Dados Empréstimo");
+
+				using(MemoryStream ms = new MemoryStream())
+				{
+					workbook.SaveAs(ms);
+					return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spredsheetml.sheet", "Emprestimo.xls");
+				}
+            }
+		}
+
+		private DataTable GetDados()
+		{
+			DataTable dataTable = new DataTable();
+
+			dataTable.TableName = "Dados empréstimos";
+
+			dataTable.Columns.Add("Recebedor", typeof(string));
+			dataTable.Columns.Add("Fornecedor", typeof(string));
+            dataTable.Columns.Add("Livro", typeof(string));
+            dataTable.Columns.Add("Data empréstimo", typeof(DateTime));
+
+			var dados = _context.Empretimos.ToList();
+
+			if(dados.Count > 0)
+			{
+				dados.ForEach(item =>
+				{
+					dataTable.Rows.Add(item.Recebedor, item.Fornecedor, item.LivroEmprestado, item.dataAtualizacao);
+				});
+			}
+
+            return dataTable;
 		}
 	}
 }
