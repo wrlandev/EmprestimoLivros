@@ -1,11 +1,15 @@
 using EmprestimoLivros.Data;
+using EmprestimoLivros.Services;
+using EmprestimoLivros.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddScoped<IEmprestimoInterface, EmprestimoService>();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnction"));
 });

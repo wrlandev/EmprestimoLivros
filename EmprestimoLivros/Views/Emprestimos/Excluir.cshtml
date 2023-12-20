@@ -1,4 +1,4 @@
-﻿@model EmprestimosModel
+﻿@model EmprestimoModel
 @{
 	ViewData["title"] = "Excluir Empréstimo";
 }
@@ -6,7 +6,7 @@
 	<div class="mb-5 text-center">
 		<h1 class="text-light">Exclusão de Empréstimo</h1>
 	</div>
-	<form asp-action="Excluir" method="post">
+	<form asp-action="Deletar" method="post">
 		<input type="hidden" asp-for="Id" />
 		<h2 class="text-light">Tem certeza que deseja excluir o registro abaixo?</h2>
 
